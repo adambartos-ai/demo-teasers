@@ -279,7 +279,26 @@ h3{font:700 17px/1.3 var(--sans)}
 .rec-title{font-size:17px;font-weight:600;color:#080707;line-height:1.2}
 .rec-btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .rec-btn{border:1px solid #DDDBDA;border-radius:5px;padding:4px 9px;font-size:11px;color:#0176D3;background:#fff;white-space:nowrap}
-.banner{border-radius:10px;padding:14px 16px;color:#fff;display:flex;justify-content:space-between;gap:14px;align-items:center;transition:background .4s}
+.banner{position:relative;overflow:hidden;border-radius:10px;padding:14px 16px;color:#fff;display:flex;justify-content:space-between;gap:14px;align-items:center}
+.banner>*{position:relative;z-index:1}
+.banner>.bgl{position:absolute;inset:0;z-index:0;display:block}
+.bgl-base{background:linear-gradient(100deg,#0F6B4D,#158059)}
+.bgl-top{background:linear-gradient(100deg,#8B2A16,#A5341C);opacity:0}
+.banner.bad .bgl-top{opacity:1}
+.banner.bad.flip .bgl-top{animation:redin .85s cubic-bezier(.4,0,.2,1) both}
+.banner.ok.flip .bgl-top{animation:redout .85s cubic-bezier(.4,0,.2,1) both}
+@keyframes redin{from{opacity:0}to{opacity:1}}
+@keyframes redout{from{opacity:1}to{opacity:0}}
+.spark svg.anim path.line{stroke-dasharray:640;stroke-dashoffset:640;animation:draw 1.15s cubic-bezier(.4,0,.2,1) .1s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.modal{animation:modalin .3s cubic-bezier(.2,.8,.3,1) both}
+@keyframes modalin{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+.modal-wrap{animation:fadein .25s ease both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.toast{animation:toastin .4s cubic-bezier(.2,.8,.3,1) both}
+@keyframes toastin{from{opacity:0;transform:translate(-50%,-14px)}to{opacity:1;transform:translate(-50%,0)}}
+.sheet{animation:sheetup .42s cubic-bezier(.2,.8,.3,1) both}
+@keyframes sheetup{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
 .banner.ok{background:linear-gradient(100deg,#0F6B4D,#158059)}
 .banner.bad{background:linear-gradient(100deg,#8B2A16,#A5341C)}
 .b-status{font:600 10.5px var(--mono);letter-spacing:.13em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
@@ -291,7 +310,7 @@ h3{font:700 17px/1.3 var(--sans)}
 .b-chip{background:rgba(255,255,255,.18);border-radius:4px;padding:2px 7px;font-weight:600}
 .b-right{display:flex;align-items:center;gap:10px;flex:none}
 .b-score{background:rgba(255,255,255,.16);border-radius:9px;padding:8px 13px;text-align:center}
-.b-score b{display:block;font:800 25px/1 var(--sans)}
+.b-score b{display:block;font:800 25px/1 var(--sans);font-variant-numeric:tabular-nums}
 .b-score span{font:600 9px var(--mono);letter-spacing:.11em}
 .b-warr{background:rgba(255,255,255,.16);border-radius:999px;padding:6px 12px;font-size:11.5px}
 .dsk-cols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:11px;margin-top:11px}
@@ -310,7 +329,7 @@ h3{font:700 17px/1.3 var(--sans)}
 .ttile.warn{border-color:#E0AE3B;background:#FEF8EC}
 .ttile.crit{border-color:#D98A7D;background:#FDEFEC}
 .ttile .k{font:600 9px var(--mono);letter-spacing:.08em;color:#706E6B;text-transform:uppercase}
-.ttile b{display:block;font:700 15px/1.15 var(--sans);color:#080707;margin-top:2px}
+.ttile b{display:block;font:700 15px/1.15 var(--sans);color:#080707;margin-top:2px;font-variant-numeric:tabular-nums}
 .ttile.crit b{color:#B3261E}
 .ttile.warn b{color:#855700}
 .ttile span{font-size:10.5px;color:#706E6B}
@@ -363,7 +382,8 @@ h3{font:700 17px/1.3 var(--sans)}
 @keyframes flash{0%,25%{background:var(--flash)}100%{background:transparent}}
 .via{white-space:nowrap;display:inline-flex;align-items:center;gap:7px;background:var(--amber);color:var(--on-amber);font:600 13px var(--mono);padding:4px 10px 4px 8px;border-radius:3px 10px 10px 3px}
 .via::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;flex:none}
-.hs{display:inline-flex;align-items:baseline;gap:6px;font:800 19px var(--sans);color:var(--ok)}
+.hs{display:inline-flex;align-items:baseline;gap:6px;font:800 19px var(--sans);color:var(--ok);transition:color .5s}
+.hs i{font-style:normal}
 .hs.crit{color:var(--crit)}
 .hs small{font:500 12px var(--mono);color:var(--muted)}
 .telem{padding:14px 19px 16px;background:#F7F9FB}
@@ -374,7 +394,8 @@ h3{font:700 17px/1.3 var(--sans)}
 .telem li{display:grid;grid-template-columns:minmax(0,1fr) auto 86px;gap:10px;padding:5px 0;font-size:13px;align-items:baseline;border-top:1px dashed var(--line)}
 .telem li:first-child{border-top:0}
 .telem .lim{font:11px var(--mono);color:var(--faint)}
-.telem .v{font:600 13px var(--mono);font-variant-numeric:tabular-nums;text-align:right;color:#1F2A3A}
+.telem .v{font:600 13px var(--mono);font-variant-numeric:tabular-nums;text-align:right;color:#1F2A3A;transition:color .5s}
+.telem .v i{font-style:normal}
 .telem li.warn .v{color:var(--amber-ink)}
 .telem li.crit .v{color:var(--crit)}
 .telem .v s{color:var(--faint);font-weight:400;margin-right:5px}
@@ -558,7 +579,7 @@ h3{font:700 17px/1.3 var(--sans)}
       id:'alert', label:'Alert', sub:'09:41 · Console', time:'09:41', icon:'sf', who:'Priya Raman', role:'Asset performance analyst',
       why:'Oil temperature crosses its limit and vibration follows. The asset re-scores itself and Agentforce recommends a move.',
       steps:[
-        {view:{kind:'dsk', state:'bad'},
+        {view:{kind:'dsk', state:'bad', flip:true},
          caption:'Gearbox oil hits 87.2°C against an 80° limit, and bearing vibration is at 7.8 mm/s. Health drops from 94 to 38 and the record turns critical on its own.',
          record:{status:'Critical', health:'38', alarm:'AL 27 · Gearbox oil temperature high'}, telem:CRITICAL},
         {view:{kind:'dsk', state:'bad', af:true},
@@ -617,7 +638,7 @@ h3{font:700 17px/1.3 var(--sans)}
       id:'clear', label:'Resolved', sub:'13:40 · Console', time:'13:40', icon:'sf', who:'Priya Raman', role:'Asset performance analyst',
       why:'The loop closes where it opened: the same screen, the same readings, back inside their limits.',
       steps:[{
-        view:{kind:'dsk', state:'ok', resolved:true},
+        view:{kind:'dsk', state:'ok', resolved:true, flip:true},
         caption:'Cooler replaced, oil sampled, alarm cleared. Health is back to 91 and the unit is generating at 4.3 MW — three hours and fifty-nine minutes after the first reading crossed its limit.',
         record:{status:'Healthy', health:'91', alarm:'Cleared 13:38', wo:'00004412 · Completed', sa:'Completed 13:38 · Alan Reed'}, telem:RESTORED
       }]
@@ -650,6 +671,29 @@ h3{font:700 17px/1.3 var(--sans)}
   }
 
   /* ---------- device renderers ---------- */
+  var NUMPREV = {};
+  function tickNums(root, animate){
+    if (!root) return;
+    Array.prototype.forEach.call(root.querySelectorAll('[data-num]'), function(el){
+      var key = el.getAttribute('data-key'), to = parseFloat(el.getAttribute('data-num'));
+      var dec = +(el.getAttribute('data-dec') || 0), suf = el.getAttribute('data-suf') || '';
+      var from = NUMPREV[key];
+      NUMPREV[key] = to;
+      if (!animate || reduce || from === undefined || from === to){ el.textContent = to.toFixed(dec) + suf; return; }
+      var t0 = null, dur = 750;
+      el.textContent = from.toFixed(dec) + suf;
+      requestAnimationFrame(function frame(ts){
+        if (t0 === null) t0 = ts;
+        var pr = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - pr, 3);
+        el.textContent = (from + (to - from) * e).toFixed(dec) + suf;
+        if (pr < 1) requestAnimationFrame(frame);
+      });
+    });
+  }
+  function num(key, val, dec, suf){
+    return '<span data-num="' + val + '" data-key="' + key + '" data-dec="' + (dec || 0) + '" data-suf="' + (suf || '') + '">' + (+val).toFixed(dec || 0) + (suf || '') + '</span>';
+  }
+
   function sbar(t, cls){
     return '<div class="sbar"><span>' + t + '</span><span class="isl" aria-hidden="true"></span>' +
       '<span class="sic" aria-hidden="true"><span class="sig"><i></i><i></i><i></i><i></i></span>' + ic('wifi',16) + '<span class="bat"><b></b></span></span></div>';
@@ -676,7 +720,9 @@ h3{font:700 17px/1.3 var(--sans)}
   function telTiles(t, compact){
     return METRICS.map(function(m){
       var st = (t.state && t.state[m.k]) || '';
-      return '<div class="ttile ' + st + '"><span class="k">' + m.name.replace('Gearbox ','').replace('HSS bearing ','') + '</span><b>' + t[m.k] + (m.unit === '°C' ? '°C' : (m.unit === 'MW' ? ' MW' : (m.unit === 'rpm' ? ' rpm' : ' mm/s'))) + '</b><span>' + m.lim + '</span></div>';
+      var suf = m.unit === '°C' ? '°C' : (m.unit === 'MW' ? ' MW' : (m.unit === 'rpm' ? ' rpm' : ' mm/s'));
+      var dec = (m.k === 'vib' || m.k === 'mw') ? 1 : 1;
+      return '<div class="ttile ' + st + '"><span class="k">' + m.name.replace('Gearbox ','').replace('HSS bearing ','') + '</span><b>' + num('d-' + m.k, t[m.k], dec, suf) + '</b><span>' + m.lim + '</span></div>';
     }).join('');
   }
   function desktop(v){
@@ -686,18 +732,18 @@ h3{font:700 17px/1.3 var(--sans)}
       '<div class="dsk-top"><img src="' + ICONS.sf + '" alt=""><span class="dsk-search">Search…</span><span class="dsk-ask">&#10022; Ask</span><span class="dsk-dots" aria-hidden="true"><i></i><i></i><i></i></span></div>' +
       '<div class="dsk-app"><span class="dsk-appname">Asset + Field Service</span><span class="dsk-tab">Home</span><span class="dsk-tab on">' + ASSET.num + ' — ' + ASSET.name + '</span></div>';
     var banner =
-      '<div class="banner ' + (bad ? 'bad' : 'ok') + '"><div><div class="b-status"><i></i>' + (bad ? 'Critical <em>AL 27</em>' : (v.resolved ? 'Healthy · alarm cleared' : 'Healthy')) + '</div>' +
+      '<div class="banner ' + (bad ? 'bad' : 'ok') + (v.flip ? ' flip' : '') + '"><span class="bgl bgl-base"></span><span class="bgl bgl-top"></span><div><div class="b-status"><i></i>' + (bad ? 'Critical <em>AL 27</em>' : (v.resolved ? 'Healthy · alarm cleared' : 'Healthy')) + '</div>' +
         '<div class="b-title">' + ASSET.num + ' — ' + ASSET.name + '</div>' +
         '<div class="b-sub">' + (bad ? 'Critical unit alert — active alarm AL 27' : (v.resolved ? 'Cooler replaced · all diagnostics back within range' : 'All diagnostics within range')) + '</div>' +
         '<div class="b-chips"><span class="b-chip">' + ASSET.model + '</span><span>SN ' + ASSET.sn + '</span><span>·</span><span>' + ASSET.site + '</span></div></div>' +
-        '<div class="b-right"><div class="b-score"><b>' + health + '</b><span>HEALTH</span></div><span class="b-warr">Under warranty</span></div></div>';
+        '<div class="b-right"><div class="b-score"><b>' + num('b-health', health, 0) + '</b><span>HEALTH</span></div><span class="b-warr">Under warranty</span></div></div>';
     var left =
       '<div class="dcard"><div class="dtabs"><b>Details</b><span>Coverages</span><span>Hierarchy</span><span>Thresholds</span><span>Service</span><span>Asset P&amp;L</span></div>' +
         '<div class="dsec">' + ic('pulse',15) + 'Asset Timeline</div>' +
         '<div class="chips"><div class="chip"><span class="k">Install</span><b>Commissioned</b>Mar 3, 2024</div>' +
         '<div class="chip"><span class="k">Service</span><b>Gearbox oil change</b>Feb 11, 2026</div>' +
         '<div class="chip"><span class="k">Warranty</span><b>Drivetrain · active</b>thru Mar 2029</div></div>' +
-        '<div class="spark"><div class="sl"><span>Gearbox oil temperature · last 12 h</span><span>limit 80°C</span></div>' + spark(bad, v.resolved) + '</div>' +
+        '<div class="spark"><div class="sl"><span>Gearbox oil temperature · last 12 h</span><span>limit 80°C</span></div>' + spark(bad, v.resolved, v.flip) + '</div>' +
       '</div>';
     var right =
       '<div class="dcard"><div class="dsec">' + ic('sync',15) + 'TracKing telemetry</div>' +
@@ -716,14 +762,14 @@ h3{font:700 17px/1.3 var(--sans)}
       '<div class="rec-btns"><span class="rec-btn">Edit</span><span class="rec-btn">Work Order Estimation</span><span class="rec-btn">New Work Order</span><span class="rec-btn">New Case</span></div></div>' +
       banner + '<div class="dsk-cols">' + left + right + '</div></div>' + modal + toast + '</div>';
   }
-  function spark(bad, resolved){
+  function spark(bad, resolved, anim){
     var pts = bad ? [56,57,58,60,63,68,74,79,83,86,87,87] : (resolved ? [87,84,79,73,68,64,62,61,61,61,61,61] : [57,58,57,59,58,58,59,58,57,58,59,58]);
     var w = 260, h = 44, max = 95, min = 50;
     var d = pts.map(function(p, i){ return (i ? 'L' : 'M') + (i * (w / (pts.length - 1))).toFixed(1) + ' ' + (h - ((p - min) / (max - min)) * h).toFixed(1); }).join(' ');
     var lim = h - ((80 - min) / (max - min)) * h;
-    return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" preserveAspectRatio="none" aria-hidden="true">' +
+    return '<svg class="' + (anim ? 'anim' : '') + '" viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="' + h + '" preserveAspectRatio="none" aria-hidden="true">' +
       '<line x1="0" y1="' + lim.toFixed(1) + '" x2="' + w + '" y2="' + lim.toFixed(1) + '" stroke="#D98A7D" stroke-width="1" stroke-dasharray="4 3"/>' +
-      '<path d="' + d + '" fill="none" stroke="' + (bad ? '#B3261E' : '#2E844A') + '" stroke-width="2"/></svg>';
+      '<path class="line" d="' + d + '" fill="none" stroke="' + (bad ? '#B3261E' : '#2E844A') + '" stroke-width="2"/></svg>';
   }
   function draftModal(){
     return '<div class="modal-wrap"><div class="modal"><div class="modal-h"><span class="k">SCADA · Proactive service</span><b>Draft Work Order</b></div>' +
@@ -806,7 +852,7 @@ h3{font:700 17px/1.3 var(--sans)}
   function renderDevice(animate){
     var s = SCENES[sc], v = s.steps[step].view, wrap = $('deviceWrap'), stage = $('stage');
     stage.className = 'stage' + (v.kind === 'dsk' ? ' wide' : '');
-    if (v.kind === 'dsk'){ wrap.innerHTML = desktop(v); bindApprove();
+    if (v.kind === 'dsk'){ wrap.innerHTML = desktop(v); bindApprove(); tickNums(wrap, animate);
       if (v.af && !v.modal){ var bd = wrap.querySelector('.dsk-body'); if (bd) bd.scrollTop = bd.scrollHeight; }
       return; }
     if (v.kind === 'fsm'){ wrap.innerHTML = '<div class="phone">' + fsm(v.screen, s.time) + '</div>'; return; }
@@ -842,7 +888,7 @@ h3{font:700 17px/1.3 var(--sans)}
       '<div class="rec-top"><div class="rec-row"><span class="label">Asset</span><span class="pill ' + (crit ? 'crit' : 'ok') + '">' + r.status + '</span></div>' +
       '<div class="rec-num">' + ASSET.num + '</div><div class="rec-subj">' + ASSET.name + ' · ' + ASSET.model + '</div>' +
       '<div class="rec-meta"><span>' + ASSET.account + '</span><span>' + ASSET.site + '</span></div></div><dl class="fields">' +
-        field('h', 'Health score', 'Health_Score__c', '<span class="hs' + (crit ? ' crit' : '') + '">' + r.health + '<small>/100</small></span>', r.health) +
+        field('h', 'Health score', 'Health_Score__c', '<span class="hs' + (crit ? ' crit' : '') + '">' + num('r-health', r.health, 0) + '<small>/100</small></span>', r.health) +
         field('a', 'Active alarm', 'Alarm_Code__c', r.alarm || EMPTY, r.alarm || '') +
         field('w', 'Work order', 'WorkOrder', r.wo || EMPTY, r.wo || '') +
         field('s', 'Service appointment', 'ServiceAppointment', r.sa || EMPTY, r.sa || '') +
@@ -853,9 +899,10 @@ h3{font:700 17px/1.3 var(--sans)}
     var telem = '<div class="telem"><div class="telem-h"><span>Live telemetry · SCADA</span><span>' + SCENES[sc].time + '</span></div><ul>' +
       METRICS.map(function(m){
         var st = (t.state && t.state[m.k]) || '', was = p && p[m.k] !== t[m.k] ? '<s>' + p[m.k] + '</s>' : '';
-        return '<li class="' + st + '"><span>' + m.name + '</span><span class="lim">' + m.lim + '</span><span class="v">' + was + t[m.k] + '</span></li>';
+        return '<li class="' + st + '"><span>' + m.name + '</span><span class="lim">' + m.lim + '</span><span class="v">' + was + num('rt-' + m.k, t[m.k], 1) + '</span></li>';
       }).join('') + '</ul></div>';
     $('record').innerHTML = html + telem;
+    tickNums($('record'), RECANIM);
     var hp = document.querySelector('.t-health');
     if (hp){ hp.className = 't-health' + (crit ? ' crit' : ''); hp.innerHTML = 'Health ' + r.health + ' · ' + r.status; }
   }
@@ -875,7 +922,8 @@ h3{font:700 17px/1.3 var(--sans)}
     $('stepCount').textContent = 'Step ' + (step + 1) + ' of ' + n;
     $('btnNext').innerHTML = atEnd ? (last ? 'Start over' : 'Next: ' + SCENES[sc + 1].label + ' &rarr;') : 'Next step &rarr;';
   }
-  function render(animate){ renderScene(); renderDevice(animate); renderRecord(); $('caption').textContent = SCENES[sc].steps[step].caption; renderControls(); }
+  var RECANIM = false;
+  function render(animate){ RECANIM = !!animate; renderScene(); renderDevice(animate); renderRecord(); $('caption').textContent = SCENES[sc].steps[step].caption; renderControls(); }
   function go(i){ sc = i; step = 0; render(true); }
   function next(){
     if (busy) return;
