@@ -735,6 +735,23 @@ h3{font:700 17px/1.3 var(--sans)}
 .vm-l{display:block;font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:#8A8578;font-style:normal;margin-bottom:3px}
 @media (max-width:700px){.scr{height:600px}}
 
+/* ================= channel chooser (same job, four surfaces) ================= */
+.chwrap{display:flex;flex-direction:column;gap:13px;align-items:center;width:100%}
+.chhead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:center;font:600 12.5px var(--sans);color:var(--navy);text-align:center}
+.chhead .wo{font:600 11.5px var(--mono);background:var(--navy);color:#fff;padding:3px 9px;border-radius:6px}
+.chhead .sub{font-weight:400;color:var(--muted)}
+.chsel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;width:100%;max-width:520px}
+.chb{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font:600 11px/1.2 var(--sans);color:var(--navy);text-align:center;font-family:var(--sans);min-width:0}
+.chb img{width:21px;height:21px;object-fit:contain;flex:none}
+.chb b{display:block;font-weight:600;white-space:normal}
+.chb span{display:block;font:9.5px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.chb:hover{border-color:#C3CEDC}
+.chb.on{background:var(--blue-soft);border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.chb.on span{color:var(--blue-d)}
+.chfoot{font:11.5px/1.45 var(--mono);color:var(--muted);text-align:center;max-width:460px}
+.chfoot b{color:var(--navy);font-family:var(--sans);font-weight:600}
+@media (max-width:520px){.chsel{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 .t-inner{min-width:1140px}
 .t-head,.t-row{grid-template-columns:238px minmax(0,1fr)}
 .evt{padding:8px 7px;margin:0 3px;align-items:flex-start}
@@ -1133,7 +1150,16 @@ window.BX = (function(){
         '<div class="msgs" id="msgs">' + list + '</div>' +
         '<div class="cl-compose"><div class="cl-box"><div class="cl-ph">Reply to Claude</div><div class="cl-row"><span class="circ">' + ic('plus',18) + '</span><span class="chip" style="font:500 12.5px var(--sans);background:#F0EEE6;color:#3D3929;border-radius:999px;padding:8px 12px">Salesforce connected</span><span class="grow"></span><span class="circ">' + ic('mic',18) + '</span><span class="circ dark">' + ic('wave',18) + '</span></div></div></div>';
     }
-    return '<div class="phone"><div class="scr ' + v.ch + '">' + html + '</div></div>';
+    var dev = '<div class="phone"><div class="scr ' + v.ch + '">' + html + '</div></div>';
+    if (v.pick === undefined) return dev;
+    var CH = [['fsl','Field Service Mobile','voice'],['sms','Text Message','no app needed'],
+              ['slack','Slack','coordinator'],['claude','Claude','back office']];
+    return '<div class="chwrap"><div class="chhead"><span class="wo">' + WO.num + '</span>' +
+      'Same close-out, four surfaces <span class="sub">&middot; pick one</span></div>' +
+      '<div class="chsel">' + CH.map(function(c, i){
+        return '<button class="chb' + (i === v.pick ? ' on' : '') + '" type="button" data-step="' + i + '">' +
+          '<img src="' + ICONS[c[0]] + '" alt=""><b>' + c[1] + '</b><span>' + c[2] + '</span></button>'; }).join('') + '</div>' +
+      dev + '<div class="chfoot">Every one of these writes the same fields: <b>3 cells flagged</b> &middot; <b>1 hardware kit consumed</b> &middot; <b>480 minutes</b> &middot; <b>follow-up raised</b>.</div></div>';
   }
 
   /* ---------------- 6. contractor invoice ---------------- */
@@ -1326,6 +1352,12 @@ window.BX = (function(){
         {view:{kind:'bid', state:'sent', out:1},
          caption:'The RFQ goes to every partner who clears the hard filters &mdash; skills, territory, insurance, licence &mdash; and to nobody who does not. Scope, window and the rate-card ceiling go with it, so what comes back is comparable.',
          record:{bids:'4 invited &middot; 0 received'}},
+        {view:{kind:'ph', ch:'sms', time:'9:14 AM', msgs:[
+          {from:'agent', text:'<b>Meridian Power Services</b> &mdash; bid opportunity from Northline Communications.<br><br>Semi-annual battery PM<br>Cedar Hollow aggregation site, OH<br>Fri 6 Oct &middot; 8 hrs estimated<br>24-cell VRLA string &middot; DC plant 48V/1200A<br><br>Required: VRLA impedance, NFPA 70E CAT 2, confined space &mdash; all current on your profile.<br><br>Rate-card ceiling $3,600. Reply with your total, or DECLINE. Closes 6 Oct 09:00.<br><br>Full scope: <span style="color:#0A84FF;text-decoration:underline">sfdc.co/b/88214</span>'},
+          {from:'me', text:'2840 \u2014 9 hrs, 2 techs, load bank included'},
+          {from:'agent', text:'Bid received: <b>$2,840</b> &middot; 9 h @ $186 &middot; load bank included. You are 1 of 4 invited. We will confirm by 6 Oct 09:00.'}]},
+         caption:'This is what the contractor actually gets. The RFQ only went to partners whose credentials already clear the job, so the text can say so &mdash; and a reply of &ldquo;2840&rdquo; parses into a bid amount, an hour count and a rate without anybody rekeying a quote.',
+         record:{bids:'4 invited &middot; 1 received'}},
         {view:{kind:'bid', state:'partial', out:1},
          caption:'Two bids inside ninety minutes and one decline. They came back as text messages and landed on the bid record as structured numbers &mdash; no one rekeyed a quote from an email.',
          record:{bids:'4 invited &middot; 2 received'}},
@@ -1353,41 +1385,41 @@ window.BX = (function(){
       ]
     },
     {
-      id:'exec', label:'Execute', sub:'6 Oct &middot; four surfaces', time:'6 Oct', icon:'fsl',
-      who:'Meridian Power Services', role:'Field crews &amp; coordinator',
-      why:'Your contractors will not install your app. They will answer a text.',
+      id:'exec', label:'Execute', sub:'6 Oct &middot; any of four surfaces', time:'6 Oct', icon:'fsl',
+      who:'Meridian Power Services', role:'The awarded partner closes WO-88214',
+      why:'Your contractors will not install your app. The same close-out has to land the same way whichever surface they pick.',
       steps:[
-        {view:{kind:'ph', ch:'fsl', time:'4:35 PM', wo:'WO-88214', msgs:[
-          {from:'me', kind:'voice', text:'Cedar Hollow is done. All twenty-four cells impedance tested, three came back high on string two &mdash; logged them. Torqued everything to spec, thermal scan clean, three hour load test held. Replaced one terminal hardware kit. Eight hours.'},
+        {view:{kind:'ph', pick:0, ch:'fsl', time:'4:35 PM', wo:'WO-88214', msgs:[
+          {from:'me', kind:'voice', text:'Cedar Hollow is done. All twenty-four cells impedance tested, three came back high on string two. Torqued everything to spec, thermal scan clean, three hour load test held. Replaced one terminal hardware kit. Eight hours.'},
           {from:'agent', kind:'form', text:'Here&rsquo;s the close-out. Look right?', title:'Work Completion &middot; WO-88214',
-           rows:[['Work','Preventive maintenance complete'],['Readings','24 cells tested &middot; 3 flagged high impedance'],['Parts','Terminal hardware kit &times;1'],['Labor','8.0 h'],['Follow-up','Yes &mdash; 3 cells for replacement quote']]},
+           rows:[['Work','Preventive maintenance complete'],['Readings','24 cells tested &middot; 3 flagged high'],['Parts','Terminal hardware kit &times;1'],['Labor','8.0 h'],['Follow-up','Yes &mdash; 3 cells for quote']]},
           {from:'me', kind:'tap', text:'Confirmed'}]},
-         caption:'Meridian&rsquo;s lead tech did take the app, so he closes by voice: readings, hardware, hours. The form fills itself and he confirms it with a glove on.',
+         caption:'The crew that did take the app closes by voice. The Work Completion form fills itself from what he said, and he confirms it with a glove on.',
          record:{via:'Field Service Mobile', day:28},
          obj:{q:100, c:100, m:100, s:60}},
-        {view:{kind:'ph', ch:'sms', time:'2:10 PM', msgs:[
-          {from:'me', text:'done at fairview. rectifier module 2 swapped, cleared the alarm. 3 hrs. no parts besides the module'},
-          {from:'agent', text:'Closing WO-88301 &mdash; Fairview rectifier, Northline. Reply Y to confirm.'},
+        {view:{kind:'ph', pick:1, ch:'sms', time:'4:35 PM', msgs:[
+          {from:'me', text:'cedar hollow done. 24 cells tested, 3 high on string 2. torqued + thermal clean, load test held 3 hrs. used 1 terminal hardware kit. 8 hrs'},
+          {from:'agent', text:'Closing WO-88214 &mdash; Cedar Hollow battery PM, Northline Communications. Reply Y to confirm.'},
           {from:'me', text:'Y'},
-          {from:'agent', text:'Work order completed. 1 rectifier module logged against your truck stock. 180 minutes of labor posted. Invoice line drafted on PMC-2043.'}]},
-         caption:'The second crew never installed anything. A text message closes a different job on the same contract, into exactly the same fields.',
-         record:{}},
-        {view:{kind:'ph', ch:'slack', time:'3:45 PM', msgs:[
-          {from:'other', text:'<span class="mention">@Agentforce</span> Ray just called in from the truck &mdash; Brookside battery PM is finished. Two cells replaced, about four hours.'},
-          {from:'agent', text:'Two open jobs at Brookside on PMC-2043. Closing WO-88288 &middot; Semi-annual battery PM &mdash; confirm?'},
-          {from:'other', text:'That&rsquo;s the one.'},
-          {from:'agent', text:'Work order completed. 2 VRLA cells logged as consumed. 240 minutes of labor. Follow-up flagged: string imbalance to re-check at the next visit.'}]},
-         caption:'A partner coordinator relays a phone call from a truck. Same completion service, same validation, from a Slack channel she already lives in.',
-         record:{}},
-        {view:{kind:'ph', ch:'claude', time:'5:50 PM', msgs:[
-          {from:'other', text:'Ray left a voicemail on the Millbrook job. Close it out in Salesforce.',
-           transcript:'Hey, it&rsquo;s Ray &mdash; Millbrook UPS, the quarterly. Ran the capacity test, it passed at ninety-four percent. Cleaned and re-torqued the DC bus. Two hours, no parts.'},
-          {from:'agent', kind:'tool', text:'I&rsquo;ll close WO-88295 with what Ray described.', head:'Salesforce &middot; complete_work_order',
-           code:'{\n  "workOrder": "WO-88295",\n  "channel": "Claude MCP",\n  "workPerformed": "Preventive maintenance complete",\n  "summary": "Capacity test passed at 94%. DC bus cleaned and re-torqued.",\n  "partsText": "",\n  "laborMinutes": 120\n}'},
+          {from:'agent', text:'Work order completed. 3 cells flagged high impedance. 1 terminal hardware kit consumed. 480 minutes of labor posted. Follow-up raised for a cell replacement quote.'}]},
+         caption:'The same job, from a crew that installed nothing. Shorthand and a thumb &mdash; and the identical five fields land on the identical work order.',
+         record:{via:'Text Message'}},
+        {view:{kind:'ph', pick:2, ch:'slack', time:'4:41 PM', msgs:[
+          {from:'other', text:'<span class="mention">@Agentforce</span> Ray is off site at Cedar Hollow &mdash; battery PM finished. 24 cells tested, three high on string two, one hardware kit, eight hours.'},
+          {from:'agent', text:'Closing WO-88214 &middot; Semi-annual battery PM at Cedar Hollow &mdash; confirm?'},
+          {from:'other', text:'Confirmed.'},
+          {from:'agent', text:'Work order completed. 3 cells flagged high impedance. 1 terminal hardware kit consumed. 480 minutes of labor posted. Follow-up raised for a cell replacement quote.'}]},
+         caption:'Or the partner&rsquo;s own coordinator relays it from the channel she already lives in, because the tech is driving. Same service, same validation, same fields.',
+         record:{via:'Slack'}},
+        {view:{kind:'ph', pick:3, ch:'claude', time:'5:50 PM', msgs:[
+          {from:'other', text:'Ray left a voicemail on the Cedar Hollow PM. Close it out in Salesforce.',
+           transcript:'Hey, it&rsquo;s Ray &mdash; Cedar Hollow, the semi-annual. Ran all twenty-four cells, three came back high on string two. Torqued and scanned, load test held. One terminal hardware kit. Eight hours.'},
+          {from:'agent', kind:'tool', text:'I&rsquo;ll close WO-88214 with what Ray described.', head:'Salesforce &middot; complete_work_order',
+           code:'{\n  "workOrder": "WO-88214",\n  "channel": "Claude MCP",\n  "workPerformed": "Preventive maintenance complete",\n  "readings": "24 cells tested, 3 flagged high impedance",\n  "partsText": "Terminal hardware kit x1",\n  "laborMinutes": 480,\n  "followUp": true\n}'},
           {from:'agent', kind:'result', head:'Result &middot; success',
-           code:'Work order completed. No parts logged. 120 minutes of labor posted.\nCompleted_Via__c = Claude MCP.'}]},
-         caption:'And the back office closes a voicemail through Claude, calling the same service through Salesforce. Four surfaces, one contract, and no app rollout for a partner network you do not employ.',
-         record:{}}
+           code:'Work order completed.\n3 cells flagged high impedance.\n1 terminal hardware kit consumed.\n480 minutes of labor posted.\nFollow-up raised for a cell replacement quote.'}]},
+         caption:'And the back office closes a voicemail through Claude against the same service. Four surfaces, one work order, one set of fields &mdash; and no app rollout for a workforce you do not employ.',
+         record:{via:'Claude MCP'}}
       ]
     },
     {
@@ -1505,9 +1537,12 @@ window.BX = (function(){
     if (v.kind === 'dash') return dashScreen(v);
     return phone(v);
   }
-  function wire(root, advance){
+  function wire(root, advance, goStep){
     var b = root.querySelector('#runBtn');
     if (b) b.addEventListener('click', advance);
+    if (goStep) Array.prototype.forEach.call(root.querySelectorAll('[data-step]'), function(el){
+      el.addEventListener('click', function(){ goStep(+el.getAttribute('data-step')); });
+    });
     var m = root.querySelector('#msgs'); if (m) m.scrollTop = m.scrollHeight;
     var p = root.querySelector('.pg'); if (p) p.scrollTop = 0;
   }
@@ -1535,7 +1570,7 @@ window.BX = (function(){
       ['5 Oct','Four partners invited','Agentforce Outreach &middot; text','A bid record per partner, replies parsed'],
       ['5 Oct','One partner excluded','Candidate matching','Certificate expiry checked against the service date'],
       ['5 Oct','Work awarded','Scheduling console','ServiceAppointment &middot; three losing bids kept'],
-      ['6 Oct','Job closed by voice','Field Service Mobile','Readings, parts consumed, labor, follow-up'],
+      ['6 Oct','Job closed','Any of four surfaces','Same 5 fields: readings, parts, labor, follow-up'],
       ['11 Oct','Invoice submitted','Experience Cloud portal','5 lines against the work order'],
       ['19 Oct','Invoice approved','Rate-card auto-match','$2,745 approved &middot; $95 exception logged'],
       ['19 Oct','Score updates','Partner dashboards','First composite, tier placement, AR position']
@@ -1560,7 +1595,7 @@ window.BX = (function(){
     var v = S[sc].steps[step].view, w = $('deviceWrap');
     $('stage').className = 'stage' + (wide(v.kind) ? ' wide' : '');
     w.innerHTML = B.screenHTML(sc, step);
-    B.wire(w, function(){ stop(); next(); });
+    B.wire(w, function(){ stop(); next(); }, function(i){ stop(); step = i; render(true); });
     B.tickNums(w, animate);
   }
   function renderRecord(){ $('record').innerHTML = B.recordHTML(sc, step); B.tickNums($('record'), ANIM); }
